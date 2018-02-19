@@ -4,7 +4,6 @@
   (load! +bindings)
   (load! +evil)
   (load! +git)
-  (load! +kb-fixes)
   (load! +leader)
   (load! +commands)
   (load! +helm)

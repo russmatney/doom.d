@@ -46,8 +46,6 @@
  :nvime "A-x" #'execute-extended-command
 
  "A-b"      #'helm-mini
- "A-n"      #'+russ/neotree-find-current-file
- "A-N"      #'+russ/neotree-reveal-current-file
  "A-y"      #'counsel-yank-pop
  "A-<tab>"  #'evil-indent-line
  "A-t"      #'alchemist-project-toggle-file-and-tests
@@ -78,8 +76,8 @@
  "A-9"    (λ! (+workspace/switch-to 9))
  "A-0"    (λ! (+workspace/switch-to 0))
  ;; "A-s"    #'+workspace/switch-to
- "A-h"    #'+workspace/switch-left
- "A-l"    #'+workspace/switch-right
+ "A-n"    #'+workspace/switch-left
+ "A-p"    #'+workspace/switch-right
  "A-["    #'+workspace/switch-left
  "A-]"    #'+workspace/switch-right
  "A-,"    #'+workspace/rename
@@ -92,10 +90,10 @@
 
  ;; window nav
  "C-`"    #'doom/popup-toggle
- "C-h"    #'rm/move-window-left
- "C-j"    #'rm/move-window-below
- "C-k"    #'rm/move-window-above
- "C-l"    #'rm/move-window-right
+ "A-h"    #'rm/move-window-left
+ "A-j"    #'rm/move-window-below
+ "A-k"    #'rm/move-window-above
+ "A-l"    #'rm/move-window-right
 
 
  "S-<left>"  #'evil-window-increase-width
@@ -123,37 +121,17 @@
  "M-q"    (if (daemonp) #'delete-frame #'save-buffers-kill-emacs)
  ;; find
  "M-f"    #'swiper
- ;; fullscreen
- "M-RET"   #'doom/toggle-fullscreen
  ;; hide
  "M-h"   #'ns-do-hide-emacs
 
  ;; quick hops
- :m "A-j" #'+russ:multi-next-line
- :m "A-k" #'+russ:multi-previous-line
+ :m "C-j" #'+russ:multi-next-line
+ :m "C-k" #'+russ:multi-previous-line
 
- ;; jump to def/ref/doc
- ;; "A-."    #'+jump/definition
- ;; :m  "gd" #'+jump/definition
- ;; "A->"    #'+jump/references
- ;; :m  "gD" #'+jump/references
- ;; "A-d"    #'+jump/documentation
- ;; :m  "gh" #'+jump/documentation
-)
-
-;; Left as a relic.
-;; (defun cleanup-file-data ()
-;;   (interactive)
-;;   (shell "/Users/russ/cleanup.sh"))
-
-(map!
  "M-p"   #'projectile-find-file
  :n "C-p"   #'projectile-find-file
-
- :n "A-p"   #'projectile-find-file
  :n  "A-v"  #'evil-window-vsplit
  :n  "A-s"  #'evil-window-split
-
 
  :v "="  #'evil-indent
 )
