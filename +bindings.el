@@ -86,7 +86,7 @@
  "A--"    #'evil-window-split
 
  ;; window nav
- "C-`"    #'doom/popup-toggle
+ "C-`"    #'+popup/toggle
  "A-h"    #'rm/move-window-left
  "A-j"    #'rm/move-window-below
  "A-k"    #'rm/move-window-above
@@ -97,10 +97,10 @@
  "S-<right>" #'evil-window-decrease-width
 
  ;; buffers
- :n  "]b" #'doom/next-buffer
- :n  "M-B" #'doom/next-buffer
- :n  "[b" #'doom/previous-buffer
- :n  "M-b" #'doom/previous-buffer
+ :n  "]b" #'next-buffer
+ :n  "M-B" #'next-buffer
+ :n  "[b" #'previous-buffer
+ :n  "M-b" #'previous-buffer
 
  :n "A-e" #'next-error
  :n "A-E" #'previous-error
@@ -126,7 +126,6 @@
  :m "C-k" #'+russ:multi-previous-line
 
  "M-p"   #'projectile-find-file
- :n "C-p"   #'projectile-find-file
  :n  "A-v"  #'evil-window-vsplit
  :n  "A-s"  #'evil-window-split
 
