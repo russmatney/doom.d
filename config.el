@@ -139,9 +139,22 @@
 ;; (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 ;; (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 
-;; (map! :map dired-mode-map
-;;          :n "-" #'dired-up-directory
-;;          :n "<return>" #'dired-find-file
-;;          )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Dired
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def-package! dired
+  :init
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
+  :config
+  (map!
+    :n "-" #'dired-jump
+    :map dired-mode-map
+         :n "-" #'dired-up-directory
+         :n "<return>" #'dired-find-file
+         ))
+
 
 (add-hook! 'before-save-hook 'whitespace-cleanup)

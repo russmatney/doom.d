@@ -52,9 +52,6 @@
  "A-<backspace>"     #'backward-kill-word
  "A-r"      #'org-babel-execute-src-block
 
- :n "-"      #'dired-jump
- ;; :n "<return>"      #'evil-goto-line
-
  ;; TODO dwim eval family (cider/geiser:eval-sexp,region,buffer:help/send-to-buffer/run)
  :n "M-l"      #'cider-eval-last-sexp
 
