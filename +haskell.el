@@ -47,3 +47,30 @@
      :n "g \\"  'intero-repl
      :n "g y"   'intero-type-at
      :n "g RET" 'grfn/intero-run-tests)))
+
+(defun urbint/format-haskell-source ()
+  (interactive)
+  (let ((output-buffer (generate-new-buffer "brittany-out"))
+        (config-file-path
+         (concat (string-trim
+                  (shell-command-to-string "stack path --project-root"))
+                 "/brittany.yaml")))
+    (when (= 0 (call-process-region
+                (point-min) (point-max)
+                "stack"
+                nil output-buffer nil
+                "exec" "--" "brittany" "--config-file" config-file-path))
+      (let ((pt (point))
+            (formatted-source (with-current-buffer output-buffer
+                                (buffer-string))))
+        (erase-buffer)
+        (insert formatted-source)
+        (goto-char pt)))))
+
+(add-hook
+ 'before-save-hook
+ (lambda ()
+   (when (eq major-mode 'haskell-mode)
+     (urbint/format-haskell-source))))
+
+
