@@ -26,4 +26,4 @@
 
 
 (after! company
-  (setq company-idle-delay 0))
+  (setq company-idle-delay 1))

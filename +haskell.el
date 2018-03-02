@@ -48,6 +48,7 @@
      :n "g y"   'intero-type-at
      :n "g RET" 'grfn/intero-run-tests)))
 
+
 (defun urbint/format-haskell-source ()
   (interactive)
   (let ((output-buffer (generate-new-buffer "brittany-out"))
@@ -61,11 +62,13 @@
                 nil output-buffer nil
                 "exec" "--" "brittany" "--config-file" config-file-path))
       (let ((pt (point))
+            (wst (window-start))
             (formatted-source (with-current-buffer output-buffer
                                 (buffer-string))))
         (erase-buffer)
         (insert formatted-source)
-        (goto-char pt)))))
+        (goto-char pt)
+        (set-window-start nil wst)))))
 
 (add-hook
  'before-save-hook

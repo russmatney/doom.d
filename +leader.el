@@ -22,18 +22,16 @@
  (:leader
    :desc "evil-ex"            :nv ";"   #'evil-ex
    :desc "eval-expression"    :nv "="   #'balance-windows-area
-   :desc "eval-buffer"        :nv "B"   #'eval-buffer
    :desc "org-capture"        :nv "x"   #'org-capture
-   :desc "+doom/blink-cursor" :n  "DEL" #'+doom/blink-cursor
 
    ;; Quick find file/buffer
-   :desc "Helm mini"              :n  "SPC" #'helm-mini
+   :desc "Helm mini"              :n  "SPC" #'persp-switch-to-buffer
    :desc "Workspace buffers"      :n  "b"   #'persp-switch-to-buffer
-   :desc "Workspace buffers"      :n  ","   #'persp-switch-to-buffer
+   :desc "Workspace buffers"      :n  ","   #'helm-mini
    :desc "All buffers"            :n  "<"   #'switch-to-buffer
    :desc "Find file"              :n  "."   #'find-file
-   :desc "Previous Buffer"        :nv "["   #'doom/previous-buffer
-   :desc "Next Buffer"            :nv "]"   #'doom/next-buffer
+   :desc "Previous Buffer"        :nv "["   #'previous-buffer
+   :desc "Next Buffer"            :nv "]"   #'next-buffer
    :desc "projectile-find-file"   :n  "p"   #'projectile-find-file
    :desc "projectile-test-toggle" :n  "t"   #'projectile-toggle-between-implementation-and-test
 
@@ -45,9 +43,6 @@
    :desc "Jump to register"      :nv "j"   #'jump-to-register
 
    ;; Windows management
-   :desc "neotree-find-current-file"   :nv "n"  #'+russ/neotree-find-current-file
-   :desc "neotree-reveal-current-file" :nv "N"  #'+russ/neotree-reveal-current-file
-   :desc "Toggle last popup"           :n  "`"  #'doom/popup-toggle
    :desc "Open vertical split"         :n  "v"  #'evil-window-vsplit
    :desc "Open vertical split"         :n  "s"  #'evil-window-split
 
@@ -130,6 +125,10 @@
      :desc "region"              :n "r" #'+eval/region
      :desc "region and replace"  :n "R" #'+eval/region-and-replace
      :desc "last sexp"           :n "l" #'cider-eval-last-sexp
+     )
+
+   (:desc "notes" :prefix "n"
+     :desc "add story to clubhouse" :n "c" #'org-clubhouse-create-story
      )
    )
 
