@@ -1,6 +1,7 @@
 ;;; private/russ/+org.el -*- lexical-binding: t; -*-
 
 
+
 (setq org-archive-location (concat "~/Dropbox/todo/archive/" (format-time-string "%Y-%m") ".org::"))
 
 (setq org-refile-targets '(("~/Dropbox/todo/gtd.org" :maxlevel . 3)
@@ -8,6 +9,35 @@
                            ("~/Dropbox/todo/writing.org" :maxlevel . 2)
                            ("~/Dropbox/todo/routines.org" :level . 1)
                            ("~/Dropbox/todo/tickler.org" :maxlevel . 2)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Mode bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; org
+(map!
+ (:after org
+   (:map org-mode-map
+     "C-j"    #'evil-window-down
+     "C-k"    #'evil-window-up
+     "M-h"    nil
+     "M-RET"  #'org-insert-item
+     "M-t"    #'org-set-tags
+     )))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Capture
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; org capture
+(map!
+ (:after org-capture
+   (:map org-capture-mode-map
+     [remap evil-save-and-close]          #'org-capture-finalize
+     [remap evil-save-modified-and-close] #'org-capture-finalize
+     [remap evil-quit]                    #'org-capture-kill)))
 
 (defun +russ/org-capture-hook ()
   (setq org-capture-templates '(("t" "Todo [inbox]" entry
@@ -24,20 +54,3 @@
 (after! org-capture
   (+russ/org-capture-hook))
 
-(map!
- (:after org
-   (:map org-mode-map
-     "C-j"    #'evil-window-down
-     "C-k"    #'evil-window-up
-     "M-h"    nil
-     "M-RET"    #'doom/toggle-fullscreen
-     "A-RET"    #'org-insert-item
-     "A-t"    #'org-set-tags
-     )))
-
-(map!
- (:after org-capture
-   (:map org-capture-mode-map
-     [remap evil-save-and-close]          #'org-capture-finalize
-     [remap evil-save-modified-and-close] #'org-capture-finalize
-     [remap evil-quit]                    #'org-capture-kill)))

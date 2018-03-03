@@ -42,10 +42,12 @@
  (:after haskell-mode
   (:map haskell-mode-map
      :n "K"     'intero-info
+     :n "g i"   'intero-info
      :n "g d"   'intero-goto-definition
      :n "g SPC" 'intero-repl-load
      :n "g \\"  'intero-repl
      :n "g y"   'intero-type-at
+     :n "g t"   'intero-type-at
      :n "g RET" 'grfn/intero-run-tests)))
 
 
