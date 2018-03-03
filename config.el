@@ -191,11 +191,15 @@
  :n  "[b" #'previous-buffer
 
  ;; find file in project
- "C-p"   #'projectile-find-file
+ :n "C-p"   #'projectile-find-file
+ ;; invalidate projectile first
+ :n "C-P"   (λ! (projectile-find-file t))
  (:leader
    :desc "projectile-find-file"   :n  "p"   #'projectile-find-file
    :desc "Find file"              :n  "."   #'find-file)
+)
 
+(map!
  ;; recentf
  (:leader :desc "recentf"                :n "r"    #'ivy-recentf)
 
@@ -313,8 +317,9 @@
    (:map counsel-ag-map
      [backtab]  #'+ivy/wgrep-occur  ; search/replace on results
      "C-SPC"    #'counsel-git-grep-recenter   ; preview
-     ))
+     )))
 
+(map!
  (:after ivy
    :map ivy-minibuffer-map
    [escape] #'keyboard-escape-quit
@@ -328,7 +333,10 @@
    "C-w" #'ivy-backward-kill-word
    "C-u" #'ivy-kill-line
    "C-b" #'backward-word
-   "C-f" #'forward-word))
+   "C-f" #'forward-word
+
+   "C-v" (+ivy-do-action! #'counsel-projectile-find-file-action-other-window)
+))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
