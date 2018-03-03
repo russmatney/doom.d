@@ -36,3 +36,36 @@
    )
 )
 
+
+(defun wpcarro/tmux-emacs-windmove (dir)
+  "Move windows in a Tmux-friendly way."
+  (let* ((dir->opts '((left . ("-L" . windmove-left))
+                      (right . ("-R" . windmove-right))
+                      (up . ("-U" . windmove-up))
+                      (down . ("-D" . windmove-down))))
+         (tmux-opt (->> dir->opts
+                        (alist-get dir)
+                        car))
+         (emacs-fn (->> dir->opts
+                        (alist-get dir)
+                        cdr))
+         (at-edge? (null (windmove-find-other-window dir))))
+    (if at-edge?
+        (shell-command (format "tmux select-pane %s" tmux-opt))
+      (funcall emacs-fn))))
+
+(defun wpcarro/tmux-emacs-windmove-left ()
+  (interactive)
+  (wpcarro/tmux-emacs-windmove 'left))
+
+(defun wpcarro/tmux-emacs-windmove-right ()
+  (interactive)
+  (wpcarro/tmux-emacs-windmove 'right))
+
+(defun wpcarro/tmux-emacs-windmove-up ()
+  (interactive)
+  (wpcarro/tmux-emacs-windmove 'up))
+
+(defun wpcarro/tmux-emacs-windmove-down ()
+  (interactive)
+  (wpcarro/tmux-emacs-windmove 'down))
