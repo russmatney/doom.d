@@ -6,9 +6,6 @@
 
 (when (featurep 'evil)
   (load! +evil)
-  ;; Packages
-  (load! +helm)
-  (load! +helm-mini)
   (load! +org)
   ;; Languages
   (load! +elisp)
