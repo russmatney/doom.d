@@ -5,14 +5,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (when (featurep 'evil)
+  ;; Functions and Fixups
   (load! +evil)
+  (load! +movement)
+  ;; Packages and Languages
   (load! +org)
-  ;; Languages
   (load! +elisp)
   (load! +haskell)
   (load! +elixir)
-  ;; Other Helpers
-  (load! +movement)
+  ;; Other
   (load! +private))
 
 
@@ -59,14 +60,7 @@
        (ex! "rg"       #'+ivy:rg)
        (ex! "rgc[wd]"  #'+ivy:rg-cwd)
        (ex! "sw[iper]" #'+ivy:swiper)
-       (ex! "t[odo]"   #'+ivy:todo))
-      ((featurep! :completion helm)
-       (ex! "ag"       #'+helm:ag)
-       (ex! "agc[wd]"  #'+helm:ag-cwd)
-       (ex! "rg"       #'+helm:rg)
-       (ex! "rgc[wd]"  #'+helm:rg-cwd)
-       (ex! "sw[oop]"  #'+helm:swoop)
-       (ex! "t[odo]"   #'+helm:todo)))
+       (ex! "t[odo]"   #'+ivy:todo)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -117,7 +111,6 @@
  :nmvo doom-leader-key nil
  :nmvo doom-localleader-key nil)
 
-
 (map!
  :nvime "M-x" #'execute-extended-command
 
@@ -142,8 +135,14 @@
  ;; org capture
  (:leader :desc "org-capture"     :nv "x"   #'org-capture))
 
-;; kill things
-(map! (:leader (:desc "kill" :prefix "k"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Kill the things
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map!
+ (:leader
+    (:desc "kill" :prefix "k"
      :desc "delete-window"           :n "k" #'delete-window
      :desc "doom/kill-other-buffers" :n "B" #'doom/kill-other-buffers
      :desc "kill-buffer-from-list"   :n "b" #'kill-buffer
@@ -151,13 +150,7 @@
      :desc "+workspace/delete"       :n "s" #'+workspace/delete
      :desc "hide-neotree"            :n "n" #'neotree-hide)))
 
-;; git things
-(map! (:leader (:desc "git" :prefix "g"
-     :desc "Git status"        :n  "s" #'magit-status
-     :desc "Git blame"         :n  "b" #'magit-blame
-     :desc "Git time machine"  :n  "t" #'git-timemachine-toggle
-     :desc "Git revert hunk"   :n  "r" #'git-gutter:revert-hunk
-     :desc "Git revert hunk"   :n  "a" #'git-gutter:stage-hunk)))
+(ex! "k" #'kill-this-buffer)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -237,6 +230,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Git
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map!
+  (:leader (:desc "git" :prefix "g"
+     :desc "Git status"        :n  "s" #'magit-status
+     :desc "Git blame"         :n  "b" #'magit-blame
+     :desc "Git time machine"  :n  "t" #'git-timemachine-toggle
+     :desc "Git revert hunk"   :n  "r" #'git-gutter:revert-hunk
+     :desc "Git revert hunk"   :n  "a" #'git-gutter:stage-hunk)))
 
 (map!
  ;; git-gutter
@@ -335,11 +336,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (map!
- :nv "/" #'swiper
  (:leader
    :desc "Imenu"                 :nv "i"   #'imenu
    :desc "Imenu across buffers"  :nv "I"   #'imenu-anywhere
-   :desc "Swiper"                :nv "f"   #'swiper))
+   :desc "Swiper"                :nv "f"   #'swiper
+   :desc "swiper"                :nv "/"   #'swiper))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
