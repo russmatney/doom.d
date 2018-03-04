@@ -49,10 +49,15 @@
          (emacs-fn (->> dir->opts
                         (alist-get dir)
                         cdr))
-         (at-edge? (null (windmove-find-other-window dir))))
-    (if at-edge?
+         (other-window (windmove-find-other-window dir))
+         (at-edge? (null other-window))
+         (other-is-inactive-minibuffer?
+          (and (window-minibuffer-p other-window)
+               (not (minibuffer-window-active-p other-window)))))
+    (if (or at-edge? other-is-inactive-minibuffer?)
         (shell-command (format "tmux select-pane %s" tmux-opt))
       (funcall emacs-fn))))
+
 
 (defun wpcarro/tmux-emacs-windmove-left ()
   (interactive)

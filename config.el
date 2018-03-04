@@ -192,12 +192,11 @@
 
  ;; find file in project
  :n "C-p"   #'projectile-find-file
- ;; invalidate projectile first
- :n "C-P"   (λ! (projectile-find-file t))
  (:leader
    :desc "projectile-find-file"   :n  "p"   #'projectile-find-file
-   :desc "Find file"              :n  "."   #'find-file)
-)
+   :desc "(invalidate cache, then) projectile-find-file"   :n  "P"   (λ! (projectile-find-file t))
+   :desc "Find file"              :n  "."   #'find-file
+))
 
 (map!
  ;; recentf
