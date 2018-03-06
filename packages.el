@@ -12,3 +12,8 @@
   :recipe (:fetcher github
            :repo "urbint/org-clubhouse"
            :files ("*")))
+
+(package! zen-mode
+  :recipe (:fetcher github
+           :repo "aki237/zen-mode"
+           :files ("*")))

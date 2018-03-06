@@ -152,6 +152,21 @@
 
 (ex! "k" #'kill-this-buffer)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Splits
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map!
+ ;; splits
+ :n  "M-v"  #'evil-window-vsplit
+ :n  "M-s"  #'evil-window-split
+ (:leader
+   :desc "Open vertical split"         :n  "v"  #'evil-window-vsplit
+   :desc "Open vertical split"         :n  "s"  #'evil-window-split)
+ (:leader
+   :desc "Open vertical split"         :n  "\\" #'evil-window-vsplit
+   :desc "Open vertical split"         :n  "-"  #'evil-window-split)
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Navigating Windows
@@ -164,13 +179,6 @@
  "M-l"    #'wpcarro/tmux-emacs-windmove-right
  "M-j"    #'wpcarro/tmux-emacs-windmove-down
  "M-k"    #'wpcarro/tmux-emacs-windmove-up
-
- ;; splits
- :n  "M-v"  #'evil-window-vsplit
- :n  "M-s"  #'evil-window-split
- (:leader
-   :desc "Open vertical split"         :n  "v"  #'evil-window-vsplit
-   :desc "Open vertical split"         :n  "s"  #'evil-window-split)
 
  ;; size Adjustments
  "S-<left>"  #'evil-window-increase-width
@@ -227,6 +235,8 @@
  ;; switch to
  :n "[w"    #'+workspace/switch-left
  :n "]w"    #'+workspace/switch-right
+ :n "[s"    #'+workspace/switch-left
+ :n "]s"    #'+workspace/switch-right
 )
 
 
@@ -447,3 +457,13 @@
 
 (after! company
   (setq company-idle-delay 1))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Zen Mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def-package! zen-mode)
+
+
+
