@@ -4,18 +4,14 @@
 ;; Imports Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(when (featurep 'evil)
-  ;; Functions and Fixups
-  (load! +evil)
-  (load! +movement)
-  ;; Packages and Languages
-  (load! +org)
-  (load! +elisp)
-  (load! +haskell)
-  (load! +elixir)
-  ;; Other
-  (load! +private))
+;; Functions and Fixups
+(load! +evil)
+(load! +movement)
 
+;; Private keys'n'such
+(load! +private)
+
+;; use the +private namespace!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global Variables
@@ -23,7 +19,7 @@
 
 (defvar +russ-dir (file-name-directory load-file-name))
 
-;; Basic Config
+;; Basic ConfiRRRRRR
 (setq backup-directory-alist `(("." . "~/.emacs-tmp/")))
 (setq auto-save-file-name-transforms `((".*" "~/.emacs-tmp/" t)))
 
@@ -302,8 +298,9 @@
   (map!
     :n "-" #'dired-jump
     :map dired-mode-map
-         :n "-" #'dired-up-directory
+         :n "-"        #'dired-up-directory
          :n "<return>" #'dired-find-file
+         :n "/"        #'dired
          ))
 
 
@@ -417,6 +414,72 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Emacs Lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-hook! :append 'emacs-lisp-mode-hook 'turn-off-smartparens-mode)
+(add-hook! :append 'emacs-lisp-mode-hook (flycheck-mode 0))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq org-archive-location (concat "~/Dropbox/todo/archive/" (format-time-string "%Y-%m") ".org::"))
+
+(setq org-refile-targets '(("~/Dropbox/todo/gtd.org" :maxlevel . 3)
+                           ("~/Dropbox/todo/someday.org" :level . 1)
+                           ("~/Dropbox/todo/writing.org" :maxlevel . 2)
+                           ("~/Dropbox/todo/routines.org" :level . 1)
+                           ("~/Dropbox/todo/tickler.org" :maxlevel . 2)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Mode bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; org
+(map!
+ (:after org
+   (:map org-mode-map
+     "C-j"    #'evil-window-down
+     "C-k"    #'evil-window-up
+     "M-h"    nil
+     "M-RET"  #'org-insert-item
+     "M-t"    #'org-set-tags
+     "TAB"    #'+org/toggle-fold
+     )))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Capture
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; org capture
+(map!
+ (:after org-capture
+   (:map org-capture-mode-map
+     [remap evil-save-and-close]          #'org-capture-finalize
+     [remap evil-save-modified-and-close] #'org-capture-finalize
+     [remap evil-quit]                    #'org-capture-kill)))
+
+(defun +russ/org-capture-hook ()
+  (setq org-capture-templates '(("t" "Todo [inbox]" entry
+                                 (file+headline "~/Dropbox/todo/inbox.org" "Tasks")
+                                 "* TODO %i%?")
+                                ("T" "Tickler" entry
+                                 (file+headline "~/Dropbox/todo/tickler.org" "Tickler")
+                                 "* %i%? \n %U"))
+
+        org-agenda-files '("~/Dropbox/todo/inbox.org"
+                           "~/Dropbox/todo/gtd.org"
+                           "~/Dropbox/todo/tickler.org")))
+
+(after! org-capture
+  (+russ/org-capture-hook))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Clubhouse
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -467,3 +530,151 @@
 
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Popups
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun rm/popup-raise ()
+  (interactive)
+  ;; get popup name
+  (let ((buffer-name (+popup/raise))
+     ((buffer (buffer-name))))))
+
+(defun rm/toggle-popup ()
+  (interactive)
+  (message "write me"))
+
+
+;;
+;; Eshell
+;;
+
+
+(defun rm/toggle-eshell ()
+  (interactive)
+  (message "does par-edit have an (interactive) toggle?"))
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helm mini
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun rm/helm-mini ()
+  (interactive)
+  (+private/find-in-config))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Haskell
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'dash)
+
+(defun grfn/haskell-test-file-p ()
+  (string-match-p (rx (and ".hs" eol))
+                  (buffer-file-name)))
+
+(defun grfn/intero-run-tests ()
+  (interactive)
+  (when (grfn/haskell-test-file-p)
+    (intero-repl-load)
+    (let ((last-buffer (current-buffer)))
+      (intero-with-repl-buffer nil
+        (comint-simple-send
+         (get-buffer-process (current-buffer))
+         "main"))
+      ;;(switch-to-buffer-other-window last-buffer)
+      )))
+
+
+(def-package! intero
+  :after haskell-mode
+  :config
+  (setq haskell-font-lock-symbols t)
+  (intero-global-mode 1)
+  (eldoc-mode)
+  (turn-off-smartparens-mode)
+  (flycheck-add-next-checker 'intero 'haskell-hlint)
+
+  (structured-haskell-mode)
+  (subword-mode)
+
+
+  ;; (let (m-symbols
+  ;;       '(("`mappend`" . "⊕")
+  ;;         ("<>"        . "⊕")))
+  ;;   (dolist (item m-symbols) (add-to-list 'haskell-font-lock-symbols-alist item)))
+
+  (setq haskell-font-lock-symbols-alist (-reject
+                                         (lambda (elem)
+                                           (string-equal "()" (car elem)))
+                                         haskell-font-lock-symbols-alist)))
+
+(map!
+ (:after haskell-mode
+  (:map haskell-mode-map
+     :n "K"     'intero-info
+     :n "g i"   'intero-info
+     :n "g d"   'intero-goto-definition
+     :n "g SPC" 'intero-repl-load
+     :n "g \\"  'intero-repl
+     :n "g y"   'intero-type-at
+     :n "g t"   'intero-type-at
+     :n "g RET" 'grfn/intero-run-tests
+     :n "g m"   'haskell-navigate-imports-go
+     :n "g b"   'haskell-navigate-imports-return
+
+     :n "g f"   'haskell-process-minimal-imports
+)))
+
+
+(defun urbint/format-haskell-source ()
+  (interactive)
+  (let ((output-buffer (generate-new-buffer "brittany-out"))
+        (config-file-path
+         (concat (string-trim
+                  (shell-command-to-string "stack path --project-root"))
+                 "/brittany.yaml")))
+    (when (= 0 (call-process-region
+                (point-min) (point-max)
+                "stack"
+                nil output-buffer nil
+                "exec" "--" "brittany" "--config-file" config-file-path))
+      (let ((pt (point))
+            (wst (window-start))
+            (formatted-source (with-current-buffer output-buffer
+                                (buffer-string))))
+        (erase-buffer)
+        (insert formatted-source)
+        (goto-char pt)
+        (set-window-start nil wst)))))
+
+(add-hook
+ 'before-save-hook
+ (lambda ()
+   (when (eq major-mode 'haskell-mode)
+     (urbint/format-haskell-source))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Elixir
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-hook! elixir-mode
+  (flycheck-mode)
+  (turn-off-smartparens-mode)
+  (rainbow-delimiters-mode))
+
+(def-package! flycheck-mix
+  :after elixir-mode
+  :config
+  (add-hook 'flycheck-mode-hook #'flycheck-mix-setup))
+
+(def-package! flycheck-credo
+  :after elixir-mode
+  :config
+  (setq flycheck-elixir-credo-strict t)
+  (add-hook 'flycheck-mode-hook #'flycheck-credo-setup))
