@@ -45,7 +45,7 @@
        spellcheck        ; tasing you for misspelling mispelling
        syntax-checker    ; tasing you for every semicolon you forget
        version-control   ; remember, remember that commit in November
-       workspaces        ; tab emulation, persistence & separate workspaces
+       ;workspaces        ; tab emulation, persistence & separate workspaces
 
        :completion
        company           ; the ultimate code completion backend
@@ -90,7 +90,7 @@
        clojure           ; java with a lisp
        csharp            ; unity, .NET, and mono shenanigans
        data              ; config/data formats
-       elixir            ; erlang done right
+       ;elixir            ; erlang done right
        elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
        ess               ; emacs speaks statistics

@@ -17,3 +17,10 @@
   :recipe (:fetcher github
            :repo "aki237/zen-mode"
            :files ("*")))
+
+(package! flow-minor-mode)
+(package! company-flow)
+(package! flycheck-flow)
+(package! prettier-js)
+(package! rjsx-mode)
+(package! add-node-modules-path)

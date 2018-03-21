@@ -678,3 +678,72 @@
   :config
   (setq flycheck-elixir-credo-strict t)
   (add-hook 'flycheck-mode-hook #'flycheck-credo-setup))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Vim S key fix
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map! :i "C-SPC"  #'+company/complete)
+(map! :n "s"  #'evil-substitute)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Vim S key fix
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq js-indent-level 2)
+;; eslint integration with flycheck
+(setq flycheck-javascript-eslint-executable "~/projects/urbint/grid-front-end/node_modules/.bin/eslint")
+;; general css settings
+(setq css-indent-offset 2)
+
+(add-hook! js-mode
+  (flycheck-mode)
+  (rainbow-delimiters-mode))
+
+(def-package! flow-minor-mode
+  :config
+  (add-hook 'js2-mode-hook #'flow-minor-mode))
+
+(def-package! company-flow
+  :init
+  (defun flow/set-flow-executable ()
+    (interactive)
+    (let* ((root (locate-dominating-file buffer-file-name  "node_modules/flow-bin"))
+           (executable (car (file-expand-wildcards
+                               (concat root "node_modules/flow-bin/*osx*/flow")))))
+      (setq-local company-flow-executable executable)
+      (setq-local flow-minor-default-binary executable)
+      (setq-local flycheck-javascript-flow-executable executable)))
+
+  :config
+  (add-hook 'rjsx-mode-hook #'flow/set-flow-executable)
+  (add-to-list 'company-flow-modes 'rjsx-mode)
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-flow)))
+
+(def-package! flycheck-flow
+  :after (flycheck)
+  :config
+  (flycheck-add-mode 'javascript-flow 'rjsx-mode)
+  (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
+  (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
+  (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
+
+(def-package! prettier-js
+  :config
+  (add-hook 'js2-mode-hook #'add-node-modules-path)
+  (add-hook 'js2-mode-hook #'prettier-js-mode)
+  (add-hook 'json-mode-hook #'prettier-js-mode)
+  (add-hook 'css-mode-hook #'prettier-js-mode))
+
+(def-package! rjsx-mode
+  :bind (:map rjsx-mode-map
+              ("<" . nil)
+              ("C-d" . nil)
+              (">" . nil))
+  :config
+  (setq js2-mode-show-parse-errors nil)
+  (setq js2-mode-show-strict-warnings nil)
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode)))
