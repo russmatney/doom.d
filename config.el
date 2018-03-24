@@ -42,6 +42,19 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Requrired before others
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; clean up before leader usage
+(map!
+ [remap evil-jump-to-tag] #'projectile-find-tag
+ [remap find-tag]         #'projectile-find-tag
+ ;; ensure there are no conflicts
+ :nmvo doom-leader-key nil
+ :nmvo doom-localleader-key nil)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Evil Commands
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -95,17 +108,45 @@
  )
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Editor helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map!
+  (:leader
+    (:desc "Editor" :prefix "e"
+      :desc "Open ~/.doom.d/config.el"  :n "v" (lambda! (find-file "~/.doom.d/config.el"))
+      :desc "Open ~/.emacs.d/readme.md" :n "d" (lambda! (find-file "~/.emacs.d/README.md"))
+      :desc "Open ~/todo/gtd.org"       :n "t" (lambda! (find-file "~/todo/gtd.org"))
+      :desc "Open ~/todo/urbint.org"    :n "u" (lambda! (find-file "~/todo/urbint.org"))
+      :desc "Open ~/projects/urbint/"   :n "p" (lambda! (find-file "~/projects/urbint/"))
+      :desc "Create new snippet"        :n "s" #'yas-new-snippet
+)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Snippets
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map!
+ (:after yasnippet
+   (:map yas-keymap
+     "C-e"           #'+snippets/goto-end-of-field
+     "C-a"           #'+snippets/goto-start-of-field
+     "<M-right>"     #'+snippets/goto-end-of-field
+     "<M-left>"      #'+snippets/goto-start-of-field
+     "<M-backspace>" #'+snippets/delete-to-start-of-field
+     [backspace]     #'+snippets/delete-backward-char
+     [delete]        #'+snippets/delete-forward-char-or-field)
+   (:map yas-minor-mode-map
+     :ig "<tab>" yas-maybe-expand
+     :v  "<tab>" #'yas-insert-snippet)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global Bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; clean up before leader usage
-(map!
- [remap evil-jump-to-tag] #'projectile-find-tag
- [remap find-tag]         #'projectile-find-tag
- ;; ensure there are no conflicts
- :nmvo doom-leader-key nil
- :nmvo doom-localleader-key nil)
 
 (map!
  :nvime "M-x" #'execute-extended-command
@@ -125,7 +166,7 @@
  "M--"    #'text-scale-decrease
 
  ;; eval exp and buffer
- (:leader :desc "eval-last-sexp" :nv "e"   #'eval-last-sexp)
+ (:leader :desc "eval-last-sexp" :nv ":"   #'eval-last-sexp)
  (:leader :desc "eval-expression" :nv "="   #'eval-expression)
 
  ;; org capture
@@ -204,7 +245,7 @@
 
 (map!
  ;; recentf
- (:leader :desc "recentf"                :n "r"    #'ivy-recentf)
+ (:leader :desc "recentf"                :n "r"    #'counsel-recentf)
 
  ;; toggle last two files
  (:leader :desc "last buffer"            :n "SPC"  #'evil-switch-to-windows-last-buffer)
@@ -529,8 +570,6 @@
 (def-package! zen-mode)
 
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Popups
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -599,7 +638,7 @@
   (turn-off-smartparens-mode)
   (flycheck-add-next-checker 'intero 'haskell-hlint)
 
-  (structured-haskell-mode)
+  ;; (structured-haskell-mode)
   (subword-mode)
 
 
@@ -626,9 +665,17 @@
      :n "g RET" 'grfn/intero-run-tests
      :n "g m"   'haskell-navigate-imports-go
      :n "g b"   'haskell-navigate-imports-return
+     :n "g f"   'urbint/format-haskell-source
+     (:leader
+       (:desc "Format" :prefix "f"
+         :desc "format imports" :n "i" 'urbint/format-haskell-imports
+         :desc "format file (brittany)" :n "b" 'urbint/format-haskell-source
+     )))))
 
-     :n "g f"   'haskell-process-minimal-imports
-)))
+(defun urbint/format-haskell-imports ()
+  (interactive)
+  (haskell-align-imports)
+  (haskell-sort-imports))
 
 
 (defun urbint/format-haskell-source ()
@@ -652,11 +699,11 @@
         (goto-char pt)
         (set-window-start nil wst)))))
 
-(add-hook
- 'before-save-hook
- (lambda ()
-   (when (eq major-mode 'haskell-mode)
-     (urbint/format-haskell-source))))
+;; (add-hook
+;;  'before-save-hook
+;;  (lambda ()
+;;    (when (eq major-mode 'haskell-mode)
+;;      (urbint/format-haskell-source))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -689,7 +736,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Vim S key fix
+;; JS + React + Flow
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq js-indent-level 2)
@@ -706,18 +753,24 @@
   :config
   (add-hook 'js2-mode-hook #'flow-minor-mode))
 
+;; (map!
+;;   (:after flow-minor-mode
+;;    (:map flow-minor-mode-map
+;;      :n "g d"  #'flow-minor-jump-to-definition)))
+
+(set! :lookup 'js2-mode :definition #'flow-minor-jump-to-definition)
+
 (def-package! company-flow
-  :init
+  :config
   (defun flow/set-flow-executable ()
     (interactive)
-    (let* ((root (locate-dominating-file buffer-file-name  "node_modules/flow-bin"))
+    (let* ((root (locate-dominating-file buffer-file-name "node_modules/flow-bin"))
            (executable (car (file-expand-wildcards
                                (concat root "node_modules/flow-bin/*osx*/flow")))))
       (setq-local company-flow-executable executable)
       (setq-local flow-minor-default-binary executable)
       (setq-local flycheck-javascript-flow-executable executable)))
 
-  :config
   (add-hook 'rjsx-mode-hook #'flow/set-flow-executable)
   (add-to-list 'company-flow-modes 'rjsx-mode)
   (with-eval-after-load 'company
@@ -733,7 +786,6 @@
 
 (def-package! prettier-js
   :config
-  (add-hook 'js2-mode-hook #'add-node-modules-path)
   (add-hook 'js2-mode-hook #'prettier-js-mode)
   (add-hook 'json-mode-hook #'prettier-js-mode)
   (add-hook 'css-mode-hook #'prettier-js-mode))
