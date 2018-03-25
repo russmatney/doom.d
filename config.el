@@ -7,8 +7,9 @@
 ;; Functions and Fixups
 (load! +evil)
 (load! +movement)
+(load! +lang-server)
 
-;; Private keys'n'such
+;;; Private keys'n'such
 (load! +private)
 
 ;; use the +private namespace!
@@ -170,7 +171,10 @@
  (:leader :desc "eval-expression" :nv "="   #'eval-expression)
 
  ;; org capture
- (:leader :desc "org-capture"     :nv "x"   #'org-capture))
+ (:leader :desc "org-capture"     :nv "x"   #'org-capture)
+
+ "M-RET" #'toggle-frame-fullscreen)
+;; # TODO restore cmd-c/v copy/paste
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -560,7 +564,7 @@
      "C-s"        #'company-filter-candidates)))
 
 (after! company
-  (setq company-idle-delay 1))
+  (setq company-idle-delay 0.4))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -628,6 +632,13 @@
       ;;(switch-to-buffer-other-window last-buffer)
       )))
 
+(def-package! lsp-haskell
+  :after (haskell-mode)
+  :config
+  (progn
+    (lsp-haskell-enable)
+    (flycheck-mode)))
+
 
 (def-package! intero
   :after haskell-mode
@@ -651,6 +662,11 @@
                                          (lambda (elem)
                                            (string-equal "()" (car elem)))
                                          haskell-font-lock-symbols-alist)))
+
+(def-package! company-lsp
+  :config
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-lsp)))
 
 (map!
  (:after haskell-mode

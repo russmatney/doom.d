@@ -24,3 +24,12 @@
 (package! prettier-js)
 (package! rjsx-mode)
 (package! add-node-modules-path)
+
+(package! lsp-mode)
+(package! lsp-ui)
+(package! lsp-haskell)
+(package! company-lsp)
+
+(package! lsp-css
+  :recipe (:fetcher github
+               :repo "emacs-lsp/lsp-css"))
