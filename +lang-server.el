@@ -4,20 +4,8 @@
 ;;; lang/language-server/config.el -*- lexical-binding: t; -*-
 
 (def-package! lsp-mode
-  :after (:any cc-mode
-               c-mode
-               c++-mode
-               objc-mode
-               python
-               haskell-mode
-               rust-mode
-               caml-mode
-               vue-mode
-               css-mode
-               scss-mode
-               sass-mode
-               less-mode
-               stylus-mode)
+  :after (:any haskell-mode
+               rust-mode)
   :config
   (setq lsp-enable-eldoc t)
   (setq lsp-enable-completion-at-point t))

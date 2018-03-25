@@ -33,3 +33,7 @@
 (package! lsp-css
   :recipe (:fetcher github
                :repo "emacs-lsp/lsp-css"))
+
+(package! graphql-mode)
+
+(package! helm)

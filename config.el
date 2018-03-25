@@ -8,6 +8,7 @@
 (load! +evil)
 (load! +movement)
 (load! +lang-server)
+;; (load! +helm-mini)
 
 ;;; Private keys'n'such
 (load! +private)
@@ -63,7 +64,12 @@
 
 (ex! "x" #'evil-save-modified-and-close)
 
-;; search
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Search
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; evil commands
 (cond ((featurep! :completion ivy)
        (ex! "ag"       #'+ivy:ag)
        (ex! "agc[wd]"  #'+ivy:ag-cwd)
@@ -71,6 +77,14 @@
        (ex! "rgc[wd]"  #'+ivy:rg-cwd)
        (ex! "sw[iper]" #'+ivy:swiper)
        (ex! "t[odo]"   #'+ivy:todo)))
+
+(defun rm/search ()
+  (interactive)
+  (evil-ex "rg "))
+
+(map! (:leader
+  :desc "Search via `rg`" :nv "a" #'rm/search))
+  ;; TODO :desc "Search for word at point" :nv "A" #'rm/search))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -148,7 +162,6 @@
 ;; Global Bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 (map!
  :nvime "M-x" #'execute-extended-command
 
@@ -172,10 +185,12 @@
 
  ;; org capture
  (:leader :desc "org-capture"     :nv "x"   #'org-capture)
+ (:leader :desc "helm-mini"     :nv "m"   #'helm-mini)
 
  "M-RET" #'toggle-frame-fullscreen)
 ;; # TODO restore cmd-c/v copy/paste
 
+(def-package! helm)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Kill the things
@@ -346,6 +361,7 @@
          :n "-"        #'dired-up-directory
          :n "<return>" #'dired-find-file
          :n "/"        #'dired
+         :n "q"        #'quit-window
          ))
 
 
@@ -599,17 +615,6 @@
   (message "does par-edit have an (interactive) toggle?"))
 
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helm mini
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun rm/helm-mini ()
-  (interactive)
-  (+private/find-in-config))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Haskell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -632,41 +637,30 @@
       ;;(switch-to-buffer-other-window last-buffer)
       )))
 
-(def-package! lsp-haskell
-  :after (haskell-mode)
-  :config
-  (progn
-    (lsp-haskell-enable)
-    (flycheck-mode)))
-
-
-(def-package! intero
-  :after haskell-mode
+(def-package! haskell-mode
   :config
   (setq haskell-font-lock-symbols t)
-  (intero-global-mode 1)
-  (eldoc-mode)
-  (turn-off-smartparens-mode)
-  (flycheck-add-next-checker 'intero 'haskell-hlint)
-
-  ;; (structured-haskell-mode)
-  (subword-mode)
-
-
-  ;; (let (m-symbols
-  ;;       '(("`mappend`" . "⊕")
-  ;;         ("<>"        . "⊕")))
-  ;;   (dolist (item m-symbols) (add-to-list 'haskell-font-lock-symbols-alist item)))
-
   (setq haskell-font-lock-symbols-alist (-reject
                                          (lambda (elem)
                                            (string-equal "()" (car elem)))
                                          haskell-font-lock-symbols-alist)))
 
-(def-package! company-lsp
+(def-package! lsp-haskell
+  :after (haskell-mode)
   :config
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-lsp)))
+  (lsp-haskell-enable))
+
+;; (def-package! company-lsp
+;;   :config
+;;   (with-eval-after-load 'company
+;;     (add-to-list 'company-backends 'company-lsp)))
+
+(def-package! intero
+  :after haskell-mode
+  :config
+  (intero-global-mode 1)
+  (flycheck-add-next-checker 'intero 'haskell-hlint)
+)
 
 (map!
  (:after haskell-mode
@@ -815,3 +809,10 @@
   (setq js2-mode-show-parse-errors nil)
   (setq js2-mode-show-strict-warnings nil)
   (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GraphQL mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def-package! graphql-mode)
