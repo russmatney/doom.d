@@ -11,7 +11,7 @@
 ;; (load! +helm-mini)
 
 ;;; Private keys'n'such
-(load! +private)
+;(load! +private)
 
 ;; use the +private namespace!
 
@@ -816,3 +816,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def-package! graphql-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Rust
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(with-eval-after-load 'lsp-mode
+  ;; (setq lsp-rust-rls-command '("rustup" "run" "nightly" "rls"))
+  (setq lsp-rust-rls-command '("rustup" "run" "stable" "rls"))
+  (require 'lsp-rust))
+
+(add-hook 'rust-mode-hook #'lsp-rust-enable)
+(add-hook 'rust-mode-hook #'flycheck-mode)
+

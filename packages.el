@@ -28,6 +28,7 @@
 (package! lsp-mode)
 (package! lsp-ui)
 (package! lsp-haskell)
+(package! lsp-rust)
 (package! company-lsp)
 
 (package! lsp-css
