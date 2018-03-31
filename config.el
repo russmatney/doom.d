@@ -647,37 +647,37 @@
                                            (string-equal "()" (car elem)))
                                          haskell-font-lock-symbols-alist)))
 
-;; (def-package! lsp-mode
-;;   :after (:any haskell-mode)
-;;   :config
-;;   (lsp-mode))
-
-;; (def-package! lsp-ui
-;;   :after lsp-mode
-;;   :config
-;;   (setq lsp-ui-flycheck-enable t)
-;;   (setq imenu-auto-rescan t)
-;;   :hook
-;;   (lsp-mode . lsp-ui-mode)
-;;   (lsp-ui-mode . flycheck-mode))
-
-;; (def-package! company-lsp
-;;   :after (lsp-mode lsp-ui)
-;;   :config
-;;   (setq company-backends '(company-lsp))
-;;   (setq company-lsp-async t))
-
-;; (def-package! lsp-haskell
-;;   :after (lsp-mode lsp-ui haskell-mode)
-;;   :hook
-;;   (haskell-mode . lsp-haskell-enable))
-
-(def-package! intero
-  :after haskell-mode
+(def-package! lsp-mode
+  :after (:any haskell-mode)
   :config
-  (intero-global-mode 1)
-  (flycheck-add-next-checker 'intero 'haskell-hlint)
-)
+  (lsp-mode))
+
+(def-package! lsp-ui
+  :after lsp-mode
+  :config
+  (setq lsp-ui-flycheck-enable t)
+  (setq imenu-auto-rescan t)
+  :hook
+  (lsp-mode . lsp-ui-mode)
+  (lsp-ui-mode . flycheck-mode))
+
+(def-package! company-lsp
+  :after (lsp-mode lsp-ui)
+  :config
+  (setq company-backends '(company-lsp))
+  (setq company-lsp-async t))
+
+(def-package! lsp-haskell
+  :after (lsp-mode lsp-ui haskell-mode)
+  :hook
+  (haskell-mode . lsp-haskell-enable))
+
+;; (def-package! intero
+;;   :after haskell-mode
+;;   :config
+;;   (intero-global-mode 1)
+;;   (flycheck-add-next-checker 'intero 'haskell-hlint)
+;; )
 
 (map!
  (:after haskell-mode
@@ -685,11 +685,11 @@
      :n "g SPC" 'haskell-process-load-file
      ;; :n "g RET" 'grfn/intero-run-tests
      ;; :n "g r"   'lsp-ui-peek-find-references
-     ;; :n "g d"   'lsp-ui-peek-find-definitions
-     :n "g d"   'intero-goto-definition
-     :n "g SPC"   'intero-repl-load
-     ;; :n "g a"   'lsp-apply-commands
-     ;; :n "g m"   'lsp-ui-imenu
+     :n "g d"   'lsp-ui-peek-find-definitions
+     ;; :n "g d"   'intero-goto-definition
+     ;; :n "g SPC"   'intero-repl-load
+     :n "g a"   'lsp-apply-commands
+     :n "g m"   'lsp-ui-imenu
      :n "g i"   'haskell-navigate-imports-go
      :n "g b"   'haskell-navigate-imports-return
      :n "g f"   'urbint/format-haskell-source
