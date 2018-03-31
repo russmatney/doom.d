@@ -26,7 +26,7 @@
 (package! add-node-modules-path)
 
 (package! lsp-mode)
-(package! lsp-ui)
+(package! lsp-ui :recipe (:fetcher github :repo "emacs-lsp/lsp-ui"))
 (package! lsp-haskell)
 (package! lsp-rust)
 (package! company-lsp)

@@ -7,13 +7,10 @@
 ;; Functions and Fixups
 (load! +evil)
 (load! +movement)
-(load! +lang-server)
 ;; (load! +helm-mini)
 
 ;;; Private keys'n'such
 ;(load! +private)
-
-;; use the +private namespace!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global Variables
@@ -163,12 +160,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (map!
+ :nvime "A-x" #'execute-extended-command
  :nvime "M-x" #'execute-extended-command
 
- :nvime "M-;" #'evil-ex
  (:leader :desc "evil-ex" :nv ";" #'evil-ex)
 
- "M-<backspace>"     #'backward-kill-word
+ "A-<backspace>"     #'backward-kill-word
 
  ;; save file (buffer)
  (:leader
@@ -180,15 +177,20 @@
  "M--"    #'text-scale-decrease
 
  ;; eval exp and buffer
- (:leader :desc "eval-last-sexp" :nv ":"   #'eval-last-sexp)
- (:leader :desc "eval-expression" :nv "="   #'eval-expression)
+ :nvime "A-;" #'eval-last-sexp
+ :nvime "A-:" #'eval-expression
 
  ;; org capture
  (:leader :desc "org-capture"     :nv "x"   #'org-capture)
  (:leader :desc "helm-mini"     :nv "m"   #'helm-mini)
 
- "M-RET" #'toggle-frame-fullscreen)
-;; # TODO restore cmd-c/v copy/paste
+ "M-RET" #'toggle-frame-fullscreen
+
+ "M-v" #'evil-paste-after
+ "M-c" #'evil-copy
+
+ "M-h" #'ns-do-hide-emacs
+)
 
 (def-package! helm)
 
@@ -214,8 +216,8 @@
 
 (map!
  ;; splits
- :n  "M-v"  #'evil-window-vsplit
- :n  "M-s"  #'evil-window-split
+ :n  "A-v"  #'evil-window-vsplit
+ :n  "A-s"  #'evil-window-split
  (:leader
    :desc "Open vertical split"         :n  "v"  #'evil-window-vsplit
    :desc "Open vertical split"         :n  "s"  #'evil-window-split)
@@ -230,11 +232,11 @@
 
 (map!
  ;; movement
- "M-w"    #'ace-window
- "M-h"    #'wpcarro/tmux-emacs-windmove-left
- "M-l"    #'wpcarro/tmux-emacs-windmove-right
- "M-j"    #'wpcarro/tmux-emacs-windmove-down
- "M-k"    #'wpcarro/tmux-emacs-windmove-up
+ "A-w"    #'ace-window
+ "A-h"    #'wpcarro/tmux-emacs-windmove-left
+ "A-l"    #'wpcarro/tmux-emacs-windmove-right
+ "A-j"    #'wpcarro/tmux-emacs-windmove-down
+ "A-k"    #'wpcarro/tmux-emacs-windmove-up
 
  ;; size Adjustments
  "S-<left>"  #'evil-window-increase-width
@@ -284,9 +286,9 @@
 
 (map!
  ;; Workspaces
- "M-c"    #'+workspace/new
- "M-,"    #'+workspace/rename
- "M-P"    #'rs/projectile-switch-project-workspace
+ "A-c"    #'+workspace/new
+ "A-,"    #'+workspace/rename
+ "A-P"    #'rs/projectile-switch-project-workspace
 
  ;; switch to
  :n "[w"    #'+workspace/switch-left
@@ -390,8 +392,8 @@
  (:after ivy
    :map ivy-minibuffer-map
    [escape] #'keyboard-escape-quit
-   "M-v" #'yank
-   "M-z" #'undo
+   "A-v" #'yank
+   "A-z" #'undo
    "C-r" #'evil-paste-from-register
    "C-k" #'ivy-previous-line
    "C-j" #'ivy-next-line
@@ -426,9 +428,9 @@
  (:after markdown-mode
    (:map markdown-mode-map
      "<backspace>" nil
-     "<M-left>"    nil
-     "<M-right>"   nil
-     "M-<tab>"     #'markdown-cycle)))
+     "<A-left>"    nil
+     "<A-right>"   nil
+     "A-<tab>"     #'markdown-cycle)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -506,8 +508,8 @@
      "C-j"    #'evil-window-down
      "C-k"    #'evil-window-up
      "M-h"    nil
-     "M-RET"  #'org-insert-item
-     "M-t"    #'org-set-tags
+     "A-RET"  #'org-insert-item
+     "A-t"    #'org-set-tags
      "TAB"    #'+org/toggle-fold
      )))
 
@@ -637,23 +639,38 @@
       ;;(switch-to-buffer-other-window last-buffer)
       )))
 
-(def-package! haskell-mode
-  :config
+(after! haskell-mode
+  (flycheck-mode)
   (setq haskell-font-lock-symbols t)
   (setq haskell-font-lock-symbols-alist (-reject
                                          (lambda (elem)
                                            (string-equal "()" (car elem)))
                                          haskell-font-lock-symbols-alist)))
 
-(def-package! lsp-haskell
-  :after (haskell-mode)
-  :config
-  (lsp-haskell-enable))
+;; (def-package! lsp-mode
+;;   :after (:any haskell-mode)
+;;   :config
+;;   (lsp-mode))
+
+;; (def-package! lsp-ui
+;;   :after lsp-mode
+;;   :config
+;;   (setq lsp-ui-flycheck-enable t)
+;;   (setq imenu-auto-rescan t)
+;;   :hook
+;;   (lsp-mode . lsp-ui-mode)
+;;   (lsp-ui-mode . flycheck-mode))
 
 ;; (def-package! company-lsp
+;;   :after (lsp-mode lsp-ui)
 ;;   :config
-;;   (with-eval-after-load 'company
-;;     (add-to-list 'company-backends 'company-lsp)))
+;;   (setq company-backends '(company-lsp))
+;;   (setq company-lsp-async t))
+
+;; (def-package! lsp-haskell
+;;   :after (lsp-mode lsp-ui haskell-mode)
+;;   :hook
+;;   (haskell-mode . lsp-haskell-enable))
 
 (def-package! intero
   :after haskell-mode
@@ -665,15 +682,15 @@
 (map!
  (:after haskell-mode
   (:map haskell-mode-map
-     :n "K"     'intero-info
-     :n "g i"   'intero-info
+     :n "g SPC" 'haskell-process-load-file
+     ;; :n "g RET" 'grfn/intero-run-tests
+     ;; :n "g r"   'lsp-ui-peek-find-references
+     ;; :n "g d"   'lsp-ui-peek-find-definitions
      :n "g d"   'intero-goto-definition
-     :n "g SPC" 'intero-repl-load
-     :n "g \\"  'intero-repl
-     :n "g y"   'intero-type-at
-     :n "g t"   'intero-type-at
-     :n "g RET" 'grfn/intero-run-tests
-     :n "g m"   'haskell-navigate-imports-go
+     :n "g SPC"   'intero-repl-load
+     ;; :n "g a"   'lsp-apply-commands
+     ;; :n "g m"   'lsp-ui-imenu
+     :n "g i"   'haskell-navigate-imports-go
      :n "g b"   'haskell-navigate-imports-return
      :n "g f"   'urbint/format-haskell-source
      (:leader
@@ -759,40 +776,40 @@
   (flycheck-mode)
   (rainbow-delimiters-mode))
 
-(def-package! flow-minor-mode
-  :config
-  (add-hook 'js2-mode-hook #'flow-minor-mode))
+;; (def-package! flow-minor-mode
+;;   :config
+;;   (add-hook 'js2-mode-hook #'flow-minor-mode))
 
 ;; (map!
-;;   (:after flow-minor-mode
-;;    (:map flow-minor-mode-map
-;;      :n "g d"  #'flow-minor-jump-to-definition)))
+;;  (:after flow-minor-mode
+;;   (:map flow-minor-mode-map
+;;      :n "g d"   'flow-minor-jump-to-definition)))
 
-(set! :lookup 'js2-mode :definition #'flow-minor-jump-to-definition)
+;; (set! :lookup 'js2-mode :definition #'flow-minor-jump-to-definition)
 
-(def-package! company-flow
-  :config
-  (defun flow/set-flow-executable ()
-    (interactive)
-    (let* ((root (locate-dominating-file buffer-file-name "node_modules/flow-bin"))
-           (executable (car (file-expand-wildcards
-                               (concat root "node_modules/flow-bin/*osx*/flow")))))
-      (setq-local company-flow-executable executable)
-      (setq-local flow-minor-default-binary executable)
-      (setq-local flycheck-javascript-flow-executable executable)))
+;; (def-package! company-flow
+;;   :config
+;;   (defun flow/set-flow-executable ()
+;;     (interactive)
+;;     (let* ((root (locate-dominating-file buffer-file-name "node_modules/flow-bin"))
+;;            (executable (car (file-expand-wildcards
+;;                                (concat root "node_modules/flow-bin/*osx*/flow")))))
+;;       (setq-local company-flow-executable executable)
+;;       (setq-local flow-minor-default-binary executable)
+;;       (setq-local flycheck-javascript-flow-executable executable)))
 
-  (add-hook 'rjsx-mode-hook #'flow/set-flow-executable)
-  (add-to-list 'company-flow-modes 'rjsx-mode)
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-flow)))
+;;   (add-hook 'rjsx-mode-hook #'flow/set-flow-executable)
+;;   (add-to-list 'company-flow-modes 'rjsx-mode)
+;;   (with-eval-after-load 'company
+;;     (add-to-list 'company-backends 'company-flow)))
 
-(def-package! flycheck-flow
-  :after (flycheck)
-  :config
-  (flycheck-add-mode 'javascript-flow 'rjsx-mode)
-  (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
-  (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
-  (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
+;; (def-package! flycheck-flow
+;;   :after (flycheck)
+;;   :config
+;;   (flycheck-add-mode 'javascript-flow 'rjsx-mode)
+;;   (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
+;;   (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
+;;   (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
 
 (def-package! prettier-js
   :config
@@ -822,11 +839,14 @@
 ;; Rust
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(with-eval-after-load 'lsp-mode
-  ;; (setq lsp-rust-rls-command '("rustup" "run" "nightly" "rls"))
-  (setq lsp-rust-rls-command '("rustup" "run" "stable" "rls"))
-  (require 'lsp-rust))
+;; (with-eval-after-load 'lsp-mode
+;;   ;; (setq lsp-rust-rls-command '("rustup" "run" "nightly" "rls"))
+;;   (setq lsp-rust-rls-command '("rustup" "run" "stable" "rls"))
+;;   (require 'lsp-rust))
 
-(add-hook 'rust-mode-hook #'lsp-rust-enable)
-(add-hook 'rust-mode-hook #'flycheck-mode)
+;; (add-hook 'rust-mode-hook #'lsp-rust-enable)
+;; (add-hook 'rust-mode-hook #'flycheck-mode)
 
+
+(setq-default fill-column 80)
+(auto-fill-mode 1)
