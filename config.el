@@ -233,10 +233,10 @@
 (map!
  ;; movement
  "A-w"    #'ace-window
- "A-h"    #'wpcarro/tmux-emacs-windmove-left
- "A-l"    #'wpcarro/tmux-emacs-windmove-right
- "A-j"    #'wpcarro/tmux-emacs-windmove-down
- "A-k"    #'wpcarro/tmux-emacs-windmove-up
+ "A-h"    #'rm/move-window-left
+ "A-l"    #'rm/move-window-right
+ "A-j"    #'rm/move-window-down
+ "A-k"    #'rm/move-window-up
 
  ;; size Adjustments
  "S-<left>"  #'evil-window-increase-width
@@ -776,6 +776,11 @@
   (flycheck-mode)
   (rainbow-delimiters-mode))
 
+;; (def-package! lsp-javascript-flow
+;;   :after (lsp-mode lsp-ui rjsx-mode)
+;;   :hook
+;;   (rjsx-mode . lsp-javascript-flow-enable))
+
 ;; (def-package! flow-minor-mode
 ;;   :config
 ;;   (add-hook 'js2-mode-hook #'flow-minor-mode))
@@ -815,7 +820,10 @@
   :config
   (add-hook 'js2-mode-hook #'prettier-js-mode)
   (add-hook 'json-mode-hook #'prettier-js-mode)
+  (add-hook 'rjsx-mode-hook 'prettier-js-mode)
   (add-hook 'css-mode-hook #'prettier-js-mode))
+
+(def-package! add-node-modules-path)
 
 (def-package! rjsx-mode
   :bind (:map rjsx-mode-map
