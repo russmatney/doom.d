@@ -1,5 +1,7 @@
-;;; +movement.el --- movement helper functions -*- lexical-binding: t; -*-
+;;;  -*- lexical-binding: t; -*-
 
+
+;;;###autoload
 (defun rm/move-window-right ()
    ""
    (interactive)
@@ -9,6 +11,7 @@
    )
 )
 
+;;;###autoload
 (defun rm/move-window-left ()
    ""
    (interactive)
@@ -18,6 +21,7 @@
    )
 )
 
+;;;###autoload
 (defun rm/move-window-up ()
    ""
    (interactive)
@@ -27,6 +31,7 @@
    )
 )
 
+;;;###autoload
 (defun rm/move-window-down ()
    ""
    (interactive)

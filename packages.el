@@ -1,5 +1,10 @@
-;; -*- no-byte-compile: t; -*-
-;;; private/russ/packages.el
+;;; packages.el -*- lexical-binding: t; -*-
+;;
+;; Author     : russmatney
+;; CreatedAt  : 15 April 2018
+;; ModifiedAt : 15 April 2018
+;; Status     : Usable
+;;
 
 ;; elixir
 (package! flycheck-mix)

@@ -1,5 +1,15 @@
-
 ;;; init.el -*- lexical-binding: t; -*-
+;;
+;; Author     : russmatney
+;; CreatedAt  : 15 April 2018
+;; ModifiedAt : 15 April 2018
+;; Status     : Usable
+;;
+;; Largely copied from `~/.emacs.d/init.example.el`
+;;
+;; Notable change is the `(:config private)` at the end,
+;; which removes the default configuration and uses my own.
+;;
 
 (defvar +org-dir (expand-file-name "~/todo/"))
 
@@ -105,25 +115,7 @@
        typescript        ; javascript, but better
        web               ; the tubes
 
-       ;; Applications are complex and opinionated modules that transform Emacs
-       ;; toward a specific purpose. They may have additional dependencies and
-       ;; should be loaded late.
-       :app
-      ;(email +gmail)    ; emacs as an email client
-      ;irc               ; how neckbeards socialize
-      ;(rss +org)        ; emacs as an RSS reader
-      ;twitter           ; twitter client https://twitter.com/vnought
-      ;(write            ; emacs as a word processor (latex + org + markdown)
-      ; +wordnut         ; wordnet (wn) search
-      ; +langtool)       ; a proofreader (grammar/style check) for Emacs
-
        :config
        private
-       ;; The default module set reasonable defaults for Emacs. It also provides
-       ;; a Spacemacs-inspired keybinding scheme, a custom yasnippet library,
-       ;; and additional ex commands for evil-mode. Use it as a reference for
-       ;; your own modules.
-       ;; (default +bindings +snippets +evil-commands)
        )
-
 

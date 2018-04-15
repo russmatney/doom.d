@@ -1,4 +1,4 @@
-;;; private/russ/+evil.el -*- lexical-binding: t; -*-
+;;;  -*- lexical-binding: t; -*-
 
 ;; disable :unless predicates with (sp-pair "'" nil :unless nil)
 ;; disable :post-handlers with (sp-pair "{" nil :post-handlers nil)
