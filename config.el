@@ -337,9 +337,12 @@
 ;; Whitespace
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq whitespace-line-column 100
+(setq whitespace-line-column 80
       whitespace-style
       '(face trailing lines-tail))
+
+(setq-default fill-column 80)
+(auto-fill-mode 1)
 
 (global-whitespace-mode t)
 
@@ -508,6 +511,7 @@
      "C-j"    #'evil-window-down
      "C-k"    #'evil-window-up
      "M-h"    nil
+     "M-v"    #'evil-paste-after
      "A-RET"  #'org-insert-item
      "A-t"    #'org-set-tags
      "TAB"    #'+org/toggle-fold
@@ -636,7 +640,7 @@
         (comint-simple-send
          (get-buffer-process (current-buffer))
          "main"))
-      ;;(switch-to-buffer-other-window last-buffer)
+      (switch-to-buffer-other-window last-buffer)
       )))
 
 (after! haskell-mode
@@ -647,50 +651,51 @@
                                            (string-equal "()" (car elem)))
                                          haskell-font-lock-symbols-alist)))
 
-(def-package! lsp-mode
-  :after (:any haskell-mode)
-  :config
-  (lsp-mode))
-
-(def-package! lsp-ui
-  :after lsp-mode
-  :config
-  (setq lsp-ui-flycheck-enable t)
-  (setq imenu-auto-rescan t)
-  :hook
-  (lsp-mode . lsp-ui-mode)
-  (lsp-ui-mode . flycheck-mode))
-
-(def-package! company-lsp
-  :after (lsp-mode lsp-ui)
-  :config
-  (setq company-backends '(company-lsp))
-  (setq company-lsp-async t))
-
-(def-package! lsp-haskell
-  :after (lsp-mode lsp-ui haskell-mode)
-  :hook
-  (haskell-mode . lsp-haskell-enable))
-
-;; (def-package! intero
-;;   :after haskell-mode
+;; (def-package! lsp-mode
+;;   :after (:any haskell-mode)
 ;;   :config
-;;   (intero-global-mode 1)
-;;   (flycheck-add-next-checker 'intero 'haskell-hlint)
-;; )
+;;   (lsp-mode))
+
+;; (def-package! lsp-ui
+;;   :after lsp-mode
+;;   :config
+;;   (setq lsp-ui-flycheck-enable t)
+;;   (setq imenu-auto-rescan t)
+;;   :hook
+;;   (lsp-mode . lsp-ui-mode)
+;;   (lsp-ui-mode . flycheck-mode))
+
+;; (def-package! company-lsp
+;;   :after (lsp-mode lsp-ui)
+;;   :config
+;;   (setq company-backends '(company-lsp))
+;;   (setq company-lsp-async t))
+
+;; (def-package! lsp-haskell
+;;   :after (lsp-mode lsp-ui haskell-mode)
+;;   :hook
+;;   (haskell-mode . lsp-haskell-enable))
+
+(def-package! intero
+  :after haskell-mode
+  :config
+  (intero-global-mode 1)
+  (flycheck-add-next-checker 'intero 'haskell-hlint)
+)
 
 (map!
  (:after haskell-mode
   (:map haskell-mode-map
      :n "g SPC" 'haskell-process-load-file
-     ;; :n "g RET" 'grfn/intero-run-tests
+     :n "g RET" 'grfn/intero-run-tests
      ;; :n "g r"   'lsp-ui-peek-find-references
-     :n "g d"   'lsp-ui-peek-find-definitions
-     ;; :n "g d"   'intero-goto-definition
-     ;; :n "g SPC"   'intero-repl-load
+     ;; :n "g d"   'lsp-ui-peek-find-definitions
+     :n "g d"   'intero-goto-definition
+     :n "g SPC" 'intero-repl-load
      :n "g a"   'lsp-apply-commands
      :n "g m"   'lsp-ui-imenu
-     :n "g i"   'haskell-navigate-imports-go
+     :n "g i"   'intero-info
+     ;; :n "g i"   'haskell-navigate-imports-go
      :n "g b"   'haskell-navigate-imports-return
      :n "g f"   'urbint/format-haskell-source
      (:leader
@@ -854,7 +859,3 @@
 
 ;; (add-hook 'rust-mode-hook #'lsp-rust-enable)
 ;; (add-hook 'rust-mode-hook #'flycheck-mode)
-
-
-(setq-default fill-column 80)
-(auto-fill-mode 1)
