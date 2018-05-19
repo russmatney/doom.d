@@ -205,8 +205,8 @@
  "S-<right>" #'evil-window-decrease-width
 
  ;; quicker j/k hops
- :m "C-j" #'+russ:multi-next-line
- :m "C-k" #'+russ:multi-previous-line
+ :m "C-j" #'+default:multi-next-line
+ :m "C-k" #'+default:multi-previous-line
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -258,6 +258,9 @@
  :n "]w"    #'+workspace/switch-right
  :n "[s"    #'+workspace/switch-left
  :n "]s"    #'+workspace/switch-right
+
+ "A-p"    #'+workspace/switch-right
+ "A-n"    #'+workspace/switch-left
 )
 
 
