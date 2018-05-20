@@ -48,6 +48,7 @@
 
 (after! haskell-mode
   (flycheck-mode)
+  (setq evil-shift-width 2)
   (setq haskell-font-lock-symbols t)
   (setq haskell-font-lock-symbols-alist (-reject
                                          (lambda (elem)
