@@ -12,7 +12,7 @@
 ;;
 
 ;;; Private keys'n'such
-(load! +private)
+(load! "+private")
 
 ;; (defvar +russ-dir (file-name-directory load-file-name))
 
@@ -52,10 +52,10 @@
 
 
 ;; load bindings
-(load! +bindings)
+(load! "+bindings")
 
 ;; load programming language configs
-(load! +langs)
+(load! "+langs")
 
 ;; load prose tools (includes markdown)
-(load! +org)
+(load! "+org")
