@@ -168,54 +168,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq js-indent-level 2)
-;; eslint integration with flycheck
+;; ;; eslint integration with flycheck
 (setq flycheck-javascript-eslint-executable "~/projects/urbint/grid-front-end/node_modules/.bin/eslint")
-;; general css settings
+;; ;; general css settings
 (setq css-indent-offset 2)
 
 (add-hook! js-mode
   (flycheck-mode)
   (rainbow-delimiters-mode))
 
-;; (def-package! lsp-javascript-flow
-;;   :after (lsp-mode lsp-ui rjsx-mode)
-;;   :hook
-;;   (rjsx-mode . lsp-javascript-flow-enable))
+(def-package! flow-minor-mode
+  :config
+  (add-hook 'js2-mode-hook #'flow-minor-mode))
 
-;; (def-package! flow-minor-mode
-;;   :config
-;;   (add-hook 'js2-mode-hook #'flow-minor-mode))
+(map!
+ (:after flow-minor-mode
+  (:map flow-minor-mode-map
+     :n "g d"   'flow-minor-jump-to-definition)))
 
-;; (map!
-;;  (:after flow-minor-mode
-;;   (:map flow-minor-mode-map
-;;      :n "g d"   'flow-minor-jump-to-definition)))
-
-;; (set! :lookup 'js2-mode :definition #'flow-minor-jump-to-definition)
-
-;; (def-package! company-flow
-;;   :config
-;;   (defun flow/set-flow-executable ()
-;;     (interactive)
-;;     (let* ((root (locate-dominating-file buffer-file-name "node_modules/flow-bin"))
-;;            (executable (car (file-expand-wildcards
-;;                                (concat root "node_modules/flow-bin/*osx*/flow")))))
-;;       (setq-local company-flow-executable executable)
-;;       (setq-local flow-minor-default-binary executable)
-;;       (setq-local flycheck-javascript-flow-executable executable)))
-
-;;   (add-hook 'rjsx-mode-hook #'flow/set-flow-executable)
-;;   (add-to-list 'company-flow-modes 'rjsx-mode)
-;;   (with-eval-after-load 'company
-;;     (add-to-list 'company-backends 'company-flow)))
-
-;; (def-package! flycheck-flow
-;;   :after (flycheck)
-;;   :config
-;;   (flycheck-add-mode 'javascript-flow 'rjsx-mode)
-;;   (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
-;;   (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
-;;   (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
+(set! :lookup 'js2-mode :definition #'flow-minor-jump-to-definition)
 
 (def-package! prettier-js
   :config
@@ -226,6 +197,35 @@
 
 (def-package! add-node-modules-path)
 
+;; (def-package! lsp-javascript-flow
+;;   :after (lsp-mode lsp-ui rjsx-mode)
+;;   :hook
+;;   (rjsx-mode . lsp-javascript-flow-enable))
+
+(def-package! company-flow
+  :config
+  (defun flow/set-flow-executable ()
+    (interactive)
+    (let* ((root (locate-dominating-file buffer-file-name "node_modules/flow-bin"))
+           (executable (car (file-expand-wildcards
+                               (concat root "node_modules/flow-bin/*osx*/flow")))))
+      (setq-local company-flow-executable executable)
+      (setq-local flow-minor-default-binary executable)
+      (setq-local flycheck-javascript-flow-executable executable)))
+
+  (add-hook 'rjsx-mode-hook #'flow/set-flow-executable)
+  (add-to-list 'company-flow-modes 'rjsx-mode)
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-flow)))
+
+(def-package! flycheck-flow
+  :after (flycheck)
+  :config
+  (flycheck-add-mode 'javascript-flow 'rjsx-mode)
+  (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
+  (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
+  (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
+
 (def-package! rjsx-mode
   :bind (:map rjsx-mode-map
               ("<" . nil)
@@ -234,7 +234,11 @@
   :config
   (setq js2-mode-show-parse-errors nil)
   (setq js2-mode-show-strict-warnings nil)
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode)))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
+)
+
+;; (load! "+emacs-flow-jsx")
+;; (def-package! flow-jsx-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
