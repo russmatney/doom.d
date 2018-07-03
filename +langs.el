@@ -80,12 +80,12 @@
 ;;   :hook
 ;;   (haskell-mode . lsp-haskell-enable))
 
-(def-package! intero
-  :after haskell-mode
-  :config
-  (intero-global-mode 1)
-  (flycheck-add-next-checker 'intero 'haskell-hlint)
-)
+;; (def-package! intero
+;;   :after haskell-mode
+;;   :config
+;;   (intero-global-mode 1)
+;;   (flycheck-add-next-checker 'intero 'haskell-hlint)
+;; )
 
 (map!
  (:after haskell-mode
