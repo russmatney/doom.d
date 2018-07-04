@@ -55,6 +55,11 @@
                                            (string-equal "()" (car elem)))
                                          haskell-font-lock-symbols-alist)))
 
+(def-package! dante
+  :config
+  (setq dante-repl-command-line '("stack" "repl" "grid:lib" "grid:grid-test"))
+)
+
 ;; (def-package! lsp-mode
 ;;   :after (:any haskell-mode)
 ;;   :config
@@ -94,11 +99,11 @@
      :n "g RET" 'grfn/intero-run-tests
      ;; :n "g r"   'lsp-ui-peek-find-references
      ;; :n "g d"   'lsp-ui-peek-find-definitions
-     :n "g d"   'intero-goto-definition
-     :n "g SPC" 'intero-repl-load
+     :n "g d"   'xref-find-definitions
+     ;; :n "g SPC" 'intero-repl-load
      :n "g a"   'lsp-apply-commands
      :n "g m"   'lsp-ui-imenu
-     :n "g i"   'intero-info
+     :n "g i"   'dante-info
      ;; :n "g i"   'haskell-navigate-imports-go
      :n "g b"   'haskell-navigate-imports-return
      :n "g f"   'urbint/format-haskell-source
@@ -186,7 +191,7 @@
   (:map flow-minor-mode-map
      :n "g d"   'flow-minor-jump-to-definition)))
 
-(set! :lookup 'js2-mode :definition #'flow-minor-jump-to-definition)
+;; (set-lookup-handlers! 'js2-mode :definition #'flow-minor-jump-to-definition)
 
 (def-package! prettier-js
   :config
