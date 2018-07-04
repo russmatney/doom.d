@@ -51,3 +51,6 @@
 
 ;; helm
 (package! helm)
+
+;; fountain
+(package! fountain-mode :recipe (:fetcher github :repo "rnkn/fountain-mode"))
