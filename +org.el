@@ -25,6 +25,17 @@
                            ("~/Dropbox/todo/routines.org" :level . 1)
                            ("~/Dropbox/todo/tickler.org" :maxlevel . 2)))
 
+(advice-add 'org-archive-subtree
+  :after
+    (lambda (&rest _)
+     (org-save-all-org-buffers)))
+
+(advice-add 'org-refile
+  :after
+    (lambda (&rest _)
+     (org-save-all-org-buffers)))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org Bindings
